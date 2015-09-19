@@ -8,13 +8,17 @@ var player;
 var cursors;
 var jumpButton;
 var jumpTimer;
-var pipe;
+var bpipe;
+var tpipe;
+var bird;
+var flappy;
 
 function preload() {
   game.stage.backgroundColor = '#bbbbbb';
   game.load.image('background','background.gif');
   game.load.image('player','player.gif');
-  game.load.image('pipe','pipe.gif')
+  game.load.image('bpipe','bpipe.gif')
+  game.load.image('tpipe','tpipe.gif')
 }
 
 function create() {
@@ -22,15 +26,29 @@ function create() {
   background = game.add.tileSprite(0,0,320,568,'background');
   background.autoScroll(-100,0);
   player = game.add.sprite(20,300,'player');
-  pipe = game.add.sprite(400,400,'pipe')
+  bpipe = game.add.sprite(400,400,'bpipe')
+  tpipe = game.add.sprite(400,-50,'tpipe')
   game.physics.enable(player, Phaser.Physics.ARCADE);
-  game.physics.enable(pipe, Phaser.Physics.ARCADE);
+  game.physics.enable(tpipe, Phaser.Physics.ARCADE);
+  game.physics.enable(bpipe, Phaser.Physics.ARCADE);
   player.body.gravity.y = 300;
   cursors = game.input.keyboard.createCursorKeys();
-  pipe.body.velocity.x = -200;
+  bpipe.body.velocity.x = -200;
+  tpipe.body.velocity.x = -200;
+  //sapce to flapp
+  game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    .onDown.add(function (){
+      player.body.velocity.y = -400;
+  })
 
+
+
+
+  //this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+  //var flapKey = this.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR);
+  //flapKey.onDown.add(this.bird.flap, this.bird);
+  //this.input.onDown.add(this.bird.flap, this.bird);
 }
-
 function update() {
 
   // move up
@@ -38,11 +56,21 @@ function update() {
     player.body.velocity.y = -200;  
   }
 
-  if (pipe.x > 300) {
-    console.log("test")
+  //reset if off screen
+  if (bpipe.x <= 0)  {
+    bpipe.x = 300
+  }
+
+  if (tpipe.x <= 0) {
+    tpipe.x = 300
   }
 }
 
 function render() {
+
 }
 
+function collisionHandler(player, pipe) {
+  missileReset();
+  repositionEnemy();
+}
