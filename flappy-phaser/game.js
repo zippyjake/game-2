@@ -15,7 +15,7 @@ var flappy;
 
 function preload() {
   game.stage.backgroundColor = '#bbbbbb';
-  game.load.image('background','background.gif');
+  game.load.spritesheet('background','background.png', 258, 258);
   game.load.image('player','player.gif');
   game.load.image('bpipe','bpipe.gif')
   game.load.image('tpipe','tpipe.gif')
@@ -24,10 +24,13 @@ function preload() {
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE)
   background = game.add.tileSprite(0,0,320,568,'background');
-  background.autoScroll(-100,0);
+  background.autoScroll(-100,0)
   player = game.add.sprite(20,300,'player');
   bpipe = game.add.sprite(400,400,'bpipe')
   tpipe = game.add.sprite(400,-50,'tpipe')
+  background.smoothed = false;
+  background.animations.add('an',[0,1,2,3,4,5], 5, true)
+  background.play('an')
   game.physics.enable(player, Phaser.Physics.ARCADE);
   game.physics.enable(tpipe, Phaser.Physics.ARCADE);
   game.physics.enable(bpipe, Phaser.Physics.ARCADE);
