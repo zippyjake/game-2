@@ -12,10 +12,13 @@ var bpipe;
 var tpipe;
 var bird;
 var flappy;
+var shutdown;
+var end;
+var state;
 
 function preload() {
   game.stage.backgroundColor = '#bbbbbb';
-  game.load.spritesheet('background','background.png', 258, 258);
+  game.load.image('background','background.gif', 258, 258);
   game.load.image('player','player.gif');
   game.load.image('bpipe','bpipe.gif')
   game.load.image('tpipe','tpipe.gif')
@@ -26,11 +29,8 @@ function create() {
   background = game.add.tileSprite(0,0,320,568,'background');
   background.autoScroll(-100,0)
   player = game.add.sprite(20,300,'player');
-  bpipe = game.add.sprite(400,400,'bpipe')
-  tpipe = game.add.sprite(400,-50,'tpipe')
-  background.smoothed = false;
-  background.animations.add('an',[0,1,2,3,4,5], 5, true)
-  background.play('an')
+  bpipe = game.add.sprite(400,400,'bpipe');
+  tpipe = game.add.sprite(400,-50,'tpipe');
   game.physics.enable(player, Phaser.Physics.ARCADE);
   game.physics.enable(tpipe, Phaser.Physics.ARCADE);
   game.physics.enable(bpipe, Phaser.Physics.ARCADE);
@@ -38,10 +38,12 @@ function create() {
   cursors = game.input.keyboard.createCursorKeys();
   bpipe.body.velocity.x = -200;
   tpipe.body.velocity.x = -200;
+  tpipe.body.immovable = true;
+  bpipe.body.immovable = true;
   //sapce to flapp
   game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
     .onDown.add(function (){
-      player.body.velocity.y = -400;
+      player.body.velocity.y = -300;
   })
 
 
@@ -53,6 +55,18 @@ function create() {
   //this.input.onDown.add(this.bird.flap, this.bird);
 }
 function update() {
+  var pipey = game.rnd.integerInRange(25,500)
+  if (tpipe.x < -50) {
+    console.log(pipey)
+    tpipe.x = 400;
+    tpipe.y = pipey - 15;
+  }
+  
+  if (bpipe.x < -50) {
+    console.log(pipey)
+    bpipe.x = 400;
+    bpipe.y = pipey + 15;
+  }
 
   // move up
   if (cursors.up.isDown) {
@@ -67,6 +81,15 @@ function update() {
   if (tpipe.x <= 0) {
     tpipe.x = 300
   }
+  if (game.physics.arcade.collide(player, tpipe)) {
+    player.destroy()
+    game.destroy()
+  }
+  if (game.physics.arcade.collide(player, bpipe)) {
+   player.destroy()
+   game.destroy()
+  }
+
 }
 
 function render() {
